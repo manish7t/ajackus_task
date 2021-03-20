@@ -1,0 +1,8 @@
+django
+djangorestframework
+djangorestframework-jwt
+markdown
+django-filter
+djangorestframework-simplejwt
+django-taggit == 1.3.0
+django-taggit-serializer
