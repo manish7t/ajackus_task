@@ -2,8 +2,8 @@
 
 1.Python3.7+
 2.Django
-3.DRF 4.````
-djangorestframework-simplejwt
+3.DRF 
+4.djangorestframework-simplejwt
 5.django-taggit
 6.django-taggit-serializer
 
