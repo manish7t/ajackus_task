@@ -8,6 +8,7 @@ djangorestframework-simplejwt
 6.django-taggit-serializer
 
 Instructions
+
 Download this repository.
 Navigate to Project directory(cd Ajackus_Task/Ajackus_Assignment/)
 Make sure you have Python3.7+ installed.
