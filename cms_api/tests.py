@@ -27,10 +27,16 @@ class RegistrationTest(APITestCase):
 
         # user register post request
         response = self.client.post(reverse('user-registration'), data=data, format='multipart')
-        # get user 
+
+        # get user
         user = AppUser.objects.get(email=data['email'])
+
         # validate data
         self.assertEqual(user.email, data['email'])
+        self.assertEqual(user.username, data['username'])
+        self.assertEqual(user.phone, data['phone'])
+        self.assertEqual(user.pincode, data['pincode'])
+
         # validate response
         self.assertEqual(response.status_code, 200)
 
@@ -42,9 +48,9 @@ class RegistrationTest(APITestCase):
         data = {'username': 'user@user.com', 'password': 'Msdks7777'}
 
         # post request
-        self.content_response = self.client.post(reverse('login'), data=data, format='multipart')
+        login_response = self.client.post(reverse('login'), data=data, format='multipart')
         # validate login request
-        self.assertEqual(self.content_response.status_code, 200)
+        self.assertEqual(login_response.status_code, 200)
 
         print("")
         print("Test : Login User : ", " Successfully Logged In !!!")
@@ -97,9 +103,17 @@ class ContentTest(APITestCase):
                 "summary": "Dont forget", "document": uploaded_file, "app_user": self.user.id, 'categories': ['test']}
 
         # content post request   
-        self.content_response = self.client.post(reverse('create-content'), data=data, format='multipart')
+        response = self.client.post(reverse('create-content'), data=data, format='multipart')
+
+        response_data = response.data
+
+        # validate data
+        self.assertEqual(response_data['title'], data['title'])
+        self.assertEqual(response_data['body'], data['body'])
+        self.assertEqual(response_data['summary'], data['summary'])
+
         # validate response
-        self.assertEqual(self.content_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         print("")
         print("Test: Create Content: ", " Successfully content created !!!")
 
@@ -124,10 +138,14 @@ class ContentTest(APITestCase):
 
         # content get request
         response = self.client.get(reverse('retrieve-content', kwargs={'pk': self.content.id}))
+
         # get content
         content = Content.objects.get(id=self.content.id)
 
-        serializer = ListContentSerializer(content)
+        # validate data
+        data = response.data
+        self.assertEqual(data['title'], content.title)
+        self.assertEqual(data['summary'], content.summary)
 
         # validate response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -148,13 +166,19 @@ class ContentTest(APITestCase):
 
         uploaded_file = SimpleUploadedFile(filename, pdf_object.read(), content_type='multipart/form-data')
 
-        data = {"title": "Imagination",
+        data = {"title": "test-update",
                 "body": "Don't forget that gifts often come with costs that go beyond their purchase price",
-                "summary": "Dont forget"}
+                "summary": "update Dont forget"}
 
         # content put request
         response = self.client.put(reverse('update-content', kwargs={'pk': self.content.id}), data=data,
                                    format='multipart')
+
+        # validate data
+        response_data = response.data
+        self.assertEqual(response_data['title'], data['title'])
+        self.assertEqual(response_data['summary'], data['summary'])
+
         # validate response    
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
